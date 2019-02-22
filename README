@@ -1,0 +1,89 @@
+-------------------------------------------------------------------------------
+                                Tema 3 - POO
+-------------------------------------------------------------------------------
+
+Autor: Smadu Razvan-Alexandru 325CB
+
+Fisiere incluse:
+  - ./bin/*      - fisiere binare (realizate cu makefile)
+  - ./doc/*      - javadoc
+  - ./src/*      - codul sursa
+  - ./.classpath - pentru eclipse (tema realizata in eclipse)
+  - ./.project   - pentru eclipse (tema realizata in eclipse)
+  - ./build      - script pentru a copia toate fisierele in ./bin/ si elimina 
+                   packet-ele respectiv incluziunile de packete create (in cazul
+                   de fata doar mainPackage)
+  - ./tema3      - script pentru rularea in formatul cerut in cerinta
+  - ./Makefile
+  - ./README
+
+README
+  Detalii generale
+    In implementarea task-ului 1, dar si pentru task-ul 2, eroul stie sa se 
+    deplaseze doar dupa o directie (stanga, dreapta, inainte, inapoi). Cu alte 
+    cuvine, eroul se misca relativ la pozitia sa curenta. Fiecare celul de tipul
+    PathCell contine un camp numit numVisited care retine de cate ori eroul a
+    trecut prin acea celula. In functie de aceasta, si de prioritatea 
+    directiilor (dreapta, fata, stanga, spate) exista un comparator in clasa 
+    interna NeighborCell din clasa Hero. Aceasta este folosit in algoritmul de 
+    la task-ul 1. Directiile reprezinta, in aceasta implementare, niste valori
+    relative la pozitia si orientarea eroului, iar orientarea este relativa
+    la harta/board (nordul este intoteauta in sus, spre valorile Y mai mici).
+    In generarea hartii, este folosit un factory care genereaza celule in 
+    functie de caracterul citit din fisier. 
+    
+    Miscarea eroului se realizeaza astfel: se roteste eroul daca este cazul si
+    apoi se deplaseaza catre celula din fata. Apoi se marcheaza celula ca fiind
+    vizitata. Deplasare in fata inseamna ca eroul sa-si pastreze orientare si sa
+    se deplaseze spre nord, sud, est sau vest. Aceasta implementarea ajuta in
+    special la realizarea task-ului 2.
+
+    Executia programului
+      Se extrag argumentele si se verifica daca acestea exista si sunt in numar 
+      corespunzator; se initializeaza stream-ul de scriere si se extrage 
+      task-ul. Se creaza un erou si o harta si se executa task-ul. Pentru 
+      fiecare task se genereaza mutari si se deplaseaza eroul pana cand ajuge la
+      portalul de iesire sau pana cand nu mai sunt mutari. 
+
+  Task-ul 1
+    La acest task, eroul se deplaseaza dupa niste directii pana cand ajunge la 
+    portalul de iesire. Directiile sunt generate la fiecare pas astfel:
+      - se creeaza un array de vecini, de tipul NeighborCell, in care se retine
+        referinta la acea celula si directia fata de erou la care se afla.
+      - se sorteza acest array dupa numarul de vizitari si dupa prioritatrea 
+        directiilor (folosind un comparator)
+      - se returneaza primul element din vectorul sortat
+    Tot ce are la dispozitie eroul sunt dimensiunile hartii si celulele vecine
+    (pentru a stii cum sa se deplaseze).
+
+  Task-ul 2
+    La acest task, eroul are acces la toata harta si va calcula folosind 
+    algoritmul de parcurgere in latime. Harta fi vazuta ca un graf sau chiar ca
+    un arbore atunci cand eroul incepe sa calculeza toate solutiile. Prin 
+    urmare, la fiecare pas de iteratie (nivel de parcurgere) se genereaza toate
+    solutiile posibile. Prima solutie care ajunge la portalul de iesire este 
+    cea mai scurta (celelalte vor ajunge mai tarziu). Cand se ajunge la portal, 
+    se opreste parcurgerea si se generaza calea in ordinea inversa (de la 
+    portalul de iesire la cel de intrare), prin datele care sunt stocate in 
+    tabela de dispersie. Se rastoarna lista si se returneaza. Apoi se extrage
+    fiecare directie si se transforma intr-o orientare pe care mai apoi eroul
+    sa o poata urma. Ultima lista de orientari reprezinta practic indicatiile
+    catre iesire. Acestea sunt urmate pe rand pana nu mai sunt, moment in care
+    eroul trebuie sa se afle pe celula cu portalul de iesire.
+    
+    Nota: Celulele retin si caracterele pentru posibilitatea de a afisa grafic
+          labirintul. Cu alte cuvine, se poate afisa labirintul, eroul si 
+          cu un anumit delay (de exemplu generat cu Thread.sleep(delay)) se 
+          poate creea o animatie in care se observa cum eroul parcurge 
+          labirintul pentru ambele task-uri.
+
+  Observatii:
+    - Pozitiile sunt considerate astfel: coltul din stanga sus are coordonatele
+    (0, 0); axa Ox reprezinta orizontalul, crescand spre dreapta; iar axa
+    Oy reprezinta verticalul, crescand de sus in jos.
+    - PathCell reprezinta acele celule care pot fi traversate de catre erou, 
+    acestea fiind: FreeCell (celula poteca, notata cu '.' in labirint), 
+    InPortalCell (celula care reprezinta portalul de intrare, reprezentata cu 
+    'I' in labirint) si celula OutPortalCell (celula care reprezinta portalul de 
+    iesire, reprezentata cu litera 'O'). 
+

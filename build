@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cp ./src/*/*.java ./bin 2>/dev/null || echo "No package found"
+cp ./src/*.java ./bin 2>/dev/null || echo "Default package is empty"
+
+packages=(./src/*)
+
+sed -i -e "s/\(package.*;\)/\/\/ \1/g" ./bin/*.java
+
+for dir in "${packages[@]}"; do
+	pkg=$(echo "$dir" | rev | cut -d'/' -f1 | rev)
+	sed -i -e "s/\(import $pkg.*;\)/\/\/ \1/g" ./bin/*.java
+done
+
+exit 0
